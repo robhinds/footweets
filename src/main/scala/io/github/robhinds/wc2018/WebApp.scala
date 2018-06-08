@@ -10,6 +10,7 @@ import io.github.robhinds.wc2018.di.Configuration
 import io.github.robhinds.wc2018.services.TweetConsumerService
 
 import scala.concurrent.ExecutionContext
+import scala.util.Try
 
 
 object WebApp extends App with LazyLogging with Configuration {
@@ -20,6 +21,7 @@ object WebApp extends App with LazyLogging with Configuration {
   new TweetConsumerService().start
 
   logger.info( "starting server" )
-  Http().bindAndHandle( logRequestResult("log",Logging.InfoLevel)( allRoutes ), "0.0.0.0", 8080 )
+  val port = Try(sys.env("PORT").toInt).getOrElse(8080)
+  Http().bindAndHandle( logRequestResult("log",Logging.InfoLevel)( allRoutes ), "0.0.0.0", port )
   logger.info( "server started, awaiting requests.." )
 }
