@@ -1,9 +1,9 @@
 package io.github.robhinds.wc2018.model
 
 case class Stats(
-  count: Int = 1,
+  count: Int = 0,
   sentimentCount: Int = 0,
-  averageSentiment: Int = 50
+  averageSentiment: Int = 0
 ) {
   def update(score: Option[Int]) = {
     score match {
