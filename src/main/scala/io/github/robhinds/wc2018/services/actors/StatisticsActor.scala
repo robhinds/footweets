@@ -1,4 +1,4 @@
-package io.github.robhinds.wc2018.services
+package io.github.robhinds.wc2018.services.actors
 
 import akka.actor.Actor
 import io.github.robhinds.wc2018.model.Countries.Country
@@ -13,7 +13,7 @@ class StatisticsActor extends Actor {
     case Init => context become ready(Map[String, Stats]())
   }
 
-  private def ready(stats: Map[String, Stats]): Receive = {
+  def ready(stats: Map[String, Stats]): Receive = {
     case UpdateStats(c, i) =>
       val newStats = c.foldLeft(stats) { (a, country) =>
         a + (country.name -> a.getOrElse(country.name, Stats()).update(i))

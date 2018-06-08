@@ -5,10 +5,9 @@ import akka.util.Timeout
 import akka.pattern.ask
 import io.github.robhinds.akkops.model.core.Response.Response
 import io.github.robhinds.akkops.model.core.Response._
-import io.github.robhinds.wc2018.model.Countries.Country
 import io.github.robhinds.wc2018.model.{Stats, Update}
-import io.github.robhinds.wc2018.services.LatestUpdateActor.{GetLatestUpdates, NewUpdate}
 import io.github.robhinds.wc2018.services.StatisticsActor.{GetAllStats, UpdateStats}
+import io.github.robhinds.wc2018.services.actors.{LatestUpdateActor, StatisticsActor}
 
 import scala.concurrent.Future
 import scala.concurrent.duration._
