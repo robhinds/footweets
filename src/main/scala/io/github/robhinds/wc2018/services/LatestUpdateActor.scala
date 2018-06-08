@@ -9,7 +9,7 @@ class LatestUpdateActor extends Actor {
   self ! Init
 
   def receive: Receive = {
-    case Init => context become ready(Seq(Update("dummy content to start", "@rob_hinds")))
+    case Init => context become ready(Seq())
   }
 
   private def ready(updates: Seq[Update]): Receive = {

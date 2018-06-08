@@ -4,6 +4,7 @@ import com.danielasfregola.twitter4s.TwitterStreamingClient
 import com.danielasfregola.twitter4s.entities.Tweet
 import com.danielasfregola.twitter4s.entities.streaming.StreamingMessage
 import com.typesafe.scalalogging.LazyLogging
+import io.github.robhinds.wc2018.model.Countries.Country
 import io.github.robhinds.wc2018.model.{Countries, Update}
 
 class TweetConsumerService extends LazyLogging {
@@ -19,14 +20,21 @@ class TweetConsumerService extends LazyLogging {
     p findAllIn s
   }
 
-  def aboutATeam(s: String): Boolean = {
-    extractHashtags(s) exists (h => Countries.lookupHashtag(h).isDefined)
-  }
+  def aboutATeam(s: String): Boolean = listCountiesMentioned(s).nonEmpty
+
+  def listCountiesMentioned(s: String): Seq[Country] =
+    (extractHashtags(s) flatMap (h => Countries.lookupHashtag(h)) toSeq).distinct
 
   def handleTweet: PartialFunction[StreamingMessage, Unit] = {
     case tweet: Tweet => if(aboutATeam(tweet.text) && !tweet.possibly_sensitive) {
       println (tweet.text)
-      InMemoryLatestUpdateService.addUpdate(Update(tweet.user.map(u => u.name).getOrElse("UNKNOWN_AUTHOR"), tweet.text))
+      InMemoryLatestUpdateService.addUpdate(
+        Update(
+          content = tweet.text,
+          author = tweet.user.map(u => u.name).getOrElse("UNKNOWN_AUTHOR"),
+          mentionedCountries = listCountiesMentioned(tweet.text)
+        )
+      )
     }
   }
 
