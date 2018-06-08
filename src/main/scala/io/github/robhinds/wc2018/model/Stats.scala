@@ -9,7 +9,7 @@ case class Stats(
     score match {
       case Some(s) => this.copy(
         count = this.count + 1,
-        averageSentiment = (this.averageSentiment + s)/(this.sentimentCount+1),
+        averageSentiment = ((this.averageSentiment * this.sentimentCount) + s)/(this.sentimentCount+1),
         sentimentCount = this.sentimentCount + 1
       )
       case _ => this.copy(count = this.count + 1)
