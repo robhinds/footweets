@@ -6,7 +6,8 @@ import akka.pattern.ask
 import io.github.robhinds.akkops.model.core.Response.Response
 import io.github.robhinds.akkops.model.core.Response._
 import io.github.robhinds.wc2018.model.{Stats, Update}
-import io.github.robhinds.wc2018.services.StatisticsActor.{GetAllStats, UpdateStats}
+import io.github.robhinds.wc2018.services.actors.LatestUpdateActor.{GetLatestUpdates, NewUpdate}
+import io.github.robhinds.wc2018.services.actors.StatisticsActor.{GetAllStats, UpdateStats}
 import io.github.robhinds.wc2018.services.actors.{LatestUpdateActor, StatisticsActor}
 
 import scala.concurrent.Future
@@ -20,8 +21,8 @@ object InMemoryLatestUpdateService extends LatestUpdateService {
   private val latestUpdatesActor = system.actorOf(Props[LatestUpdateActor], name = "latest-updates-actor")
   private val statsActor = system.actorOf(Props[StatisticsActor], name = "stats-actor")
 
-  override def getLatestUpdates(paging: Int): Future[Response[Seq[Update]]] =
-    (latestUpdatesActor ? GetLatestUpdates()).mapTo[Seq[Update]] map success
+  override def getLatestUpdates: Future[Response[Seq[Update]]] =
+    (latestUpdatesActor ? GetLatestUpdates).mapTo[Seq[Update]] map success
 
   override def addUpdate(u: Update): Unit = {
     latestUpdatesActor ! NewUpdate(u)

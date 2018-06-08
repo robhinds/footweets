@@ -10,7 +10,7 @@ import scala.concurrent.Future
 trait MockLatestUpdateModule extends LatestUpdateModule {
   override def latestUpdateService: LatestUpdateService = new LatestUpdateService {
 
-    override def getLatestUpdates(paging: Int): Future[Response[Seq[Update]]] =
+    override def getLatestUpdates: Future[Response[Seq[Update]]] =
       Future(success(Seq(
         Update("some message about some things", "author1", Some(0)),
         Update("some message about some #WorldCup and #FRA #ENG", "author2", Some(100))
