@@ -10,6 +10,7 @@ import com.danielasfregola.twitter4s.TwitterStreamingClient
 import com.danielasfregola.twitter4s.entities.Tweet
 import com.danielasfregola.twitter4s.entities.streaming.StreamingMessage
 import io.github.robhinds.wc2018.di.Configuration
+import io.github.robhinds.wc2018.services.TweetConsumerService
 
 import scala.concurrent.ExecutionContext
 
@@ -20,8 +21,8 @@ object WebApp extends App with LazyLogging with Configuration {
   protected implicit val executor: ExecutionContext = system.dispatcher
   protected implicit val materializer: ActorMaterializer = ActorMaterializer()
 
-  logger.info( "starting firehose" )
-
+  private val client = new TweetConsumerService()
+  client.start
 
   logger.info( "starting server" )
   Http().bindAndHandle( logRequestResult("log",Logging.InfoLevel)( allRoutes ), "0.0.0.0", 8080 )
