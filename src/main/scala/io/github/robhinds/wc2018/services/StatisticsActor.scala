@@ -16,7 +16,7 @@ class StatisticsActor extends Actor {
   private def ready(stats: Map[String, Stats]): Receive = {
     case UpdateStats(c, i) =>
       val newStats = c.foldLeft(stats) { (a, country) =>
-        a + (country.name -> a.getOrElse(country.name, Stats()))
+        a + (country.name -> a.getOrElse(country.name, Stats()).update(i))
       }
       context become ready(newStats)
     case GetAllStats => sender() ! stats
