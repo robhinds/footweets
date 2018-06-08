@@ -1,0 +1,58 @@
+import com.github.jengelman.gradle.plugins.shadow.transformers.AppendingTransformer
+
+task wrapper(type: Wrapper) {
+    gradleVersion = '3.4'
+}
+
+buildscript {
+    repositories {
+        mavenCentral()
+        jcenter()
+    }
+    dependencies {
+        classpath 'com.github.maiflai:gradle-scalatest:0.12'
+        classpath files('src/main/resources')
+        classpath 'com.github.jengelman.gradle.plugins:shadow:2.0.4'
+    }
+}
+
+ext {
+    scalaVersion = "2.12.4"
+}
+
+group 'io.robhinds.wc2018'
+version '1.0-SNAPSHOT'
+
+apply {
+    plugin 'scala'
+    plugin 'com.github.maiflai.scalatest'
+    plugin 'com.github.johnrengelman.shadow'
+    plugin 'application'
+}
+
+shadowJar {
+    zip64 true
+    exclude 'META-INF/*.DSA'
+    exclude 'META-INF/*.RSA'
+    transform(AppendingTransformer) {
+        resource = 'reference.conf'
+    }
+}
+
+mainClassName = 'io.github.robhinds.wc2018.WebApp'
+
+sourceCompatibility = 1.8
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    compile "io.github.robhinds.akk-ops:web-app_2.12:1.0-SNAPSHOT"
+    compile "ch.qos.logback:logback-classic:1.2.3"
+    compile "com.danielasfregola:twitter4s_2.12:5.5"
+
+    testCompile "org.scalatest:scalatest_2.12:3.0.1"
+    testRuntime "org.pegdown:pegdown:1.4.2"
+    testCompile "org.mockito:mockito-core:2.+"
+}
