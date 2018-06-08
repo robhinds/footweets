@@ -12,7 +12,7 @@ class LatestUpdatesRouting {
 
   val routes: Route =
     getPath("latest") {
-      respond(latestUpdateService.getLatestUpdates())
+      respond(latestUpdateService.getLatestUpdates)
     } ~
     getPath("stats") {
       respond(latestUpdateService.getStats)

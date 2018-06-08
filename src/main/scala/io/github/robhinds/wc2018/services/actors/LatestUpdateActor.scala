@@ -21,5 +21,5 @@ class LatestUpdateActor extends Actor {
 object LatestUpdateActor {
   case object Init
   case class NewUpdate(u: Update)
-  case class GetLatestUpdates
+  case object GetLatestUpdates
 }
