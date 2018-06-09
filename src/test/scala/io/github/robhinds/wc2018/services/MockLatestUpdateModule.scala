@@ -17,7 +17,7 @@ trait MockLatestUpdateModule extends LatestUpdateModule {
         Update("some message about some #WorldCup and #FRA #ENG", "author2", Some(100))
       )))
 
-    override def addUpdate(u: Update): Unit = println(s"Added Update $u")
+    override def addUpdate(u: Update): Future[Unit] = Future { println(s"Added Update $u") }
 
     override def getStats: Future[Response[Map[String, Stats]]] =
       Future(success(Map[String, Stats]("England" -> Stats(12, 7, 75))))

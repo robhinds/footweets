@@ -6,10 +6,11 @@ import com.danielasfregola.twitter4s.entities.streaming.StreamingMessage
 import com.typesafe.scalalogging.LazyLogging
 import io.github.robhinds.wc2018.model.Countries.Country
 import io.github.robhinds.wc2018.model.{Countries, Update}
-import io.github.robhinds.wc2018.modules.LatestUpdateModule
+import io.github.robhinds.wc2018.modules.{LatestUpdateModule, SentimentModule}
+import scala.concurrent.ExecutionContext.Implicits.global
 
 class TweetConsumerService extends LazyLogging {
-  this: LatestUpdateModule =>
+  this: LatestUpdateModule with SentimentModule =>
 
   def start = {
     logger.info( "starting streaming" )
@@ -29,13 +30,23 @@ class TweetConsumerService extends LazyLogging {
 
   def handleTweet: PartialFunction[StreamingMessage, Unit] = {
     case tweet: Tweet => if(aboutATeam(tweet.text) && !tweet.possibly_sensitive) {
-      latestUpdateService.addUpdate(
-        Update(
-          content = tweet.text,
-          author = tweet.user.map(u => u.name).getOrElse("UNKNOWN_AUTHOR"),
-          mentionedCountries = listCountiesMentioned(tweet.text)
-        )
-      )
+      val sentiment = sentimentService.getSentiment(tweet.text)
+      for {
+        s <- sentiment
+        score: Int = if (s == "POSITIVE") 100
+          else if (s == "NEGATIVE") -100
+        else 0
+        _ <-
+          latestUpdateService.addUpdate(
+            Update(
+              content = tweet.text,
+              author = tweet.user.map(u => u.name).getOrElse("UNKNOWN_AUTHOR"),
+              mentionedCountries = listCountiesMentioned(tweet.text),
+              sentimentScore = Some(score)
+            )
+          )
+      } yield s
+
     }
   }
 

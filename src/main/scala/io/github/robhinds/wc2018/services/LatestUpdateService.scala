@@ -8,6 +8,6 @@ import scala.concurrent.Future
 
 trait LatestUpdateService {
   def getLatestUpdates: Future[Response[Seq[Update]]]
-  def addUpdate(u: Update): Unit
+  def addUpdate(u: Update): Future[Unit]
   def getStats: Future[Response[Map[String, Stats]]]
 }

@@ -24,7 +24,7 @@ object InMemoryLatestUpdateService extends LatestUpdateService {
   override def getLatestUpdates: Future[Response[Seq[Update]]] =
     (latestUpdatesActor ? GetLatestUpdates).mapTo[Seq[Update]] map success
 
-  override def addUpdate(u: Update): Unit = {
+  override def addUpdate(u: Update): Future[Unit] = Future {
     latestUpdatesActor ! NewUpdate(u)
     statsActor ! UpdateStats( u.mentionedCountries, u.sentimentScore)
   }
