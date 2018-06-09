@@ -6,6 +6,7 @@ import io.github.robhinds.wc2018.model.{Stats, Update}
 import io.github.robhinds.wc2018.modules.LatestUpdateModule
 
 import scala.concurrent.Future
+import scala.concurrent.ExecutionContext.Implicits.global
 
 trait MockLatestUpdateModule extends LatestUpdateModule {
   override def latestUpdateService: LatestUpdateService = new LatestUpdateService {
@@ -16,10 +17,9 @@ trait MockLatestUpdateModule extends LatestUpdateModule {
         Update("some message about some #WorldCup and #FRA #ENG", "author2", Some(100))
       )))
 
-    override def addUpdate(u: Update): Unit = true
+    override def addUpdate(u: Update): Unit = println(s"Added Update $u")
 
-    override def getStats: Future[Response[Map[String, Stats]]] = Future(success(
-      Map("England", Stats(12, 7, 75))
-    ))
+    override def getStats: Future[Response[Map[String, Stats]]] =
+      Future(success(Map[String, Stats]("England" -> Stats(12, 7, 75))))
   }
 }
