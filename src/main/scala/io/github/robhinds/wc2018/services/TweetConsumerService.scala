@@ -7,7 +7,9 @@ import com.typesafe.scalalogging.LazyLogging
 import io.github.robhinds.wc2018.model.Countries.Country
 import io.github.robhinds.wc2018.model.{Countries, Update}
 import io.github.robhinds.wc2018.modules.{LatestUpdateModule, SentimentModule}
+
 import scala.concurrent.ExecutionContext.Implicits.global
+import scala.util.Failure
 
 class TweetConsumerService extends LazyLogging {
   this: LatestUpdateModule with SentimentModule =>
@@ -33,20 +35,16 @@ class TweetConsumerService extends LazyLogging {
       val sentiment = sentimentService.getSentiment(tweet.text)
       for {
         s <- sentiment
-        score: Int = if (s == "POSITIVE") 100
-          else if (s == "NEGATIVE") -100
-        else 0
         _ <-
           latestUpdateService.addUpdate(
             Update(
               content = tweet.text,
               author = tweet.user.map(u => u.name).getOrElse("UNKNOWN_AUTHOR"),
               mentionedCountries = listCountiesMentioned(tweet.text),
-              sentimentScore = Some(score)
+              sentimentScore = Some(s.score)
             )
           )
       } yield s
-
     }
   }
 
