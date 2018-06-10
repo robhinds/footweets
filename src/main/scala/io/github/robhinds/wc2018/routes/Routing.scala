@@ -7,7 +7,7 @@ import io.github.robhinds.akkops.routing.DefaultResponseHandler._
 import io.github.robhinds.akkops.routing.directives.Directives._
 import io.github.robhinds.wc2018.modules.LatestUpdateModule
 
-class LatestUpdatesRouting {
+class Routing {
   this: LatestUpdateModule =>
 
   val routes: Route =

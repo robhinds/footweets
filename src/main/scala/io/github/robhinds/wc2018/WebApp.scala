@@ -7,7 +7,7 @@ import com.typesafe.scalalogging.LazyLogging
 import akka.http.scaladsl.Http
 import akka.http.scaladsl.server.Directives._
 import io.github.robhinds.wc2018.modules.{AwsSentimentModule, InMemoryLatestUpdateModule}
-import io.github.robhinds.wc2018.routes.LatestUpdatesRouting
+import io.github.robhinds.wc2018.routes.Routing
 import io.github.robhinds.wc2018.services.TweetConsumerService
 
 import scala.concurrent.ExecutionContext
@@ -19,7 +19,7 @@ object WebApp extends App with LazyLogging {
   private implicit val system = ActorSystem()
   protected implicit val executor: ExecutionContext = system.dispatcher
   protected implicit val materializer: ActorMaterializer = ActorMaterializer()
-  val allRoutes = (new LatestUpdatesRouting() with InMemoryLatestUpdateModule).routes
+  val allRoutes = (new Routing() with InMemoryLatestUpdateModule).routes
   val twitterClient = new TweetConsumerService() with InMemoryLatestUpdateModule with AwsSentimentModule
 
   logger.info("Starting Twitter connection")
